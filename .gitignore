@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+.idea/
+
+**/bin/
+**/bin.dbg/
+**/bin.rel/
+**/bin.relwithdbg/
+**/cmake-build-*
