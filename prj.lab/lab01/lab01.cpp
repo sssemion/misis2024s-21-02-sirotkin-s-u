@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
     cv::vconcat(gradient, gamma_corrected, result);
 
     if (args.filename.empty()) {
-        cv::imshow("Gradient", result);
+        cv::imshow("Gradient + gamma-corrected", result);
         cv::waitKey(0);
     } else {
         cv::imwrite(args.filename, result);
