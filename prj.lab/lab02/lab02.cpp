@@ -29,7 +29,7 @@ cv::Mat drawHistogram(const cv::Mat& img) {
     std::vector<int> histogram(256, 0);
     for (int y = 0; y < img.rows; ++y) {
         for (int x = 0; x < img.cols; ++x) {
-            int intensity = (int)(img.at<uchar>(y, x));
+            int intensity = img.at<uchar>(y, x);
             histogram[intensity]++;
         }
     }
@@ -55,9 +55,9 @@ void addNoise(cv::Mat& img, double sigma) {
 
     for (int i = 0; i < img.rows; ++i) {
         for (int j = 0; j < img.cols; ++j) {
-            int new_value = img.at<cv::Vec3b>(i, j)[0] + (int)(distribution(generator));
+            int new_value = img.at<uchar>(i, j) + (int)std::round(distribution(generator));
             new_value = std::min(255, std::max(0, new_value));
-            img.at<cv::Vec3b>(i, j)[0] = new_value;
+            img.at<uchar>(i, j) = new_value;
         }
     }
 }
