@@ -15,6 +15,6 @@ find_package(OpenCV CONFIG REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_subdirectory(
-#        prj.cw
+        prj.cw/src
         prj.lab
 )
