@@ -6,24 +6,27 @@ int main() {
     Detection detector(img);
     detector.blur(5);
 
-    auto red_mask = detector.get_mask(Detection::RED_RANGES);
+    auto red_mask = detector.getMask(Detection::RED_RANGES);
 
-    std::vector<std::vector<cv::Point>> contours;
-    cv::findContours(red_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    auto contours = detector.getContours(red_mask);
 
-    // Фильтрация контуров по площади
-    std::vector<std::vector<cv::Point>> filtered_contours;
-    double min_area = 1000;
-    for (const auto& cnt : contours) {
-        double area = cv::contourArea(cnt);
-        if (area > min_area) {
-            filtered_contours.push_back(cnt);
-        }
+    detector.filterMask(red_mask);
+
+    auto circles = detector.getCircles(red_mask);
+
+    for (int i = 0; i < circles.size(); ++i) {
+        cv::Vec3f circle = circles[i];
+        cv::Point center = cv::Point(cvRound(circle[0]), cvRound(circle[1]));
+        int radius = cvRound(circle[2]);
+        cv::circle(img, center, radius, cv::Scalar(0, 255, 0), 2);
     }
 
-    cv::drawContours(img, filtered_contours, -1, {0, 255, 0}, 3);
+    auto triangles = detector.getTriangles(contours);
 
-    cv::imshow("Blurred", img);
+    cv::drawContours(img, triangles, -1, (0, 255, 255), 2);
+
+    cv::imshow("Mask", red_mask);
+    cv::imshow("Image", img);
 
     cv::waitKey(0);
 }

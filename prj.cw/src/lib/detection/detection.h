@@ -21,7 +21,15 @@ public:
 
     void blur(int size);
 
-    cv::Mat get_mask(const std::vector<ColorRange> &ranges) const;
+    cv::Mat getMask(const std::vector<ColorRange> &ranges) const;
+
+    std::vector<std::vector<cv::Point>> getContours(const cv::Mat& mask) const;
+
+    void filterMask(cv::Mat& mask) const;
+
+    std::vector<cv::Vec3f> getCircles(const cv::Mat& mask) const;
+
+    std::vector<std::vector<cv::Point>> getTriangles(const std::vector<std::vector<cv::Point>> &contours) const;
 };
 
 #endif //DETECTION_H
