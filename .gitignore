@@ -38,3 +38,5 @@
 **/bin.rel/
 **/bin.relwithdbg/
 **/cmake-build-*
+
+**/.DS_Store

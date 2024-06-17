@@ -4,13 +4,12 @@ int main() {
     cv::Mat img = cv::imread("dev.jpeg");
 
     Detection detector(img);
-    detector.blur(5);
 
     auto red_mask = detector.getMask(Detection::RED_RANGES);
 
     auto contours = detector.getContours(red_mask);
 
-    detector.filterMask(red_mask);
+//    detector.filterMask(red_mask);
 
     auto circles = detector.getCircles(red_mask);
 

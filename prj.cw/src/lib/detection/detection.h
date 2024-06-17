@@ -9,8 +9,8 @@ public:
     cv::Mat image;
 
     static inline const std::vector<ColorRange> RED_RANGES = {
-        { cv::Scalar(0, 10, 10), cv::Scalar(30, 255, 255) },
-        { cv::Scalar(150, 10, 10), cv::Scalar(180, 255, 255) },
+        { cv::Scalar(0, 50, 100), cv::Scalar(9, 255, 255) },
+        { cv::Scalar(171, 50, 100), cv::Scalar(180, 255, 255) },
     };
 
     static inline const std::vector<ColorRange> BLUE_RANGES = {
@@ -18,8 +18,6 @@ public:
     };
 
     explicit Detection(cv::Mat& image);
-
-    void blur(int size);
 
     cv::Mat getMask(const std::vector<ColorRange> &ranges) const;
 

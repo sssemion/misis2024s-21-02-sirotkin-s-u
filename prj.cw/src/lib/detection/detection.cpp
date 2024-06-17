@@ -7,10 +7,6 @@ Detection::Detection(cv::Mat& image) {
     cv::cvtColor(image, this->image, cv::COLOR_BGR2HSV);
 }
 
-void Detection::blur(int size) {
-    cv::GaussianBlur(image, image, cv::Size(size, size), 0);
-}
-
 cv::Mat Detection::getMask(const std::vector<ColorRange>& ranges) const {
     cv::Mat mask;
     for (auto &range : ranges) {
@@ -22,7 +18,7 @@ cv::Mat Detection::getMask(const std::vector<ColorRange>& ranges) const {
             mask |= tmp;
     }
 
-    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(9, 9));
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5));
     cv::morphologyEx(mask, mask, cv::MORPH_CLOSE, kernel);
     cv::morphologyEx(mask, mask, cv::MORPH_OPEN, kernel);
     return mask;
@@ -34,7 +30,7 @@ std::vector<std::vector<cv::Point>> Detection::getContours(const cv::Mat &mask) 
 
     // Фильтрация контуров по площади
     std::vector<std::vector<cv::Point>> filtered_contours;
-    double min_area = image.rows * image.cols * 0.01;
+    double min_area = image.rows * image.cols * 0.004;  // 0.4% of overall area
     for (const auto& cnt : contours) {
         double area = cv::contourArea(cnt);
         if (area > min_area)
@@ -52,7 +48,7 @@ void Detection::filterMask(cv::Mat &mask) const {
 
 std::vector<cv::Vec3f> Detection::getCircles(const cv::Mat &mask) const {
     std::vector<cv::Vec3f> circles;
-    cv::HoughCircles(mask, circles, cv::HOUGH_GRADIENT, 1, mask.rows / 4.0, 200, 22, 0, 0);
+    cv::HoughCircles(mask, circles, cv::HOUGH_GRADIENT, 1, mask.rows / 4.0, 200, 25, 0, 0);
     return circles;
 }
 
@@ -60,7 +56,7 @@ std::vector<std::vector<cv::Point>> Detection::getTriangles(const std::vector<st
     std::vector<std::vector<cv::Point>> triangles;
     for (const auto& cnt : contours) {
         std::vector<cv::Point> approx;
-        double epsilon = 0.02 * cv::arcLength(cnt, true);
+        double epsilon = 0.05 * cv::arcLength(cnt, true);
         cv::approxPolyDP(cnt, approx, epsilon, true);
         if (approx.size() == 3)
             triangles.push_back(approx);

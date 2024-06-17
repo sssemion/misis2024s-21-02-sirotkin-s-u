@@ -1,5 +1,3 @@
-project(detection)
-
 set(SRCS detection.cpp)
 
 add_library(detection STATIC ${SRCS})
