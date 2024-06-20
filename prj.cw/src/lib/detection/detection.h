@@ -4,6 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include "../common/common.h"
 
+
 class Detection {
 public:
     cv::Mat image;
@@ -28,6 +29,8 @@ public:
     std::vector<cv::Vec3f> getCircles(const cv::Mat& mask) const;
 
     std::vector<Triangle> getTriangles(const std::vector<std::vector<cv::Point>> &contours) const;
+
+    std::vector<TrafficSign> proceed() const;
 };
 
 #endif //DETECTION_H

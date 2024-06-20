@@ -2,6 +2,7 @@
 #define VISUALIZATION_H
 
 #include <opencv2/opencv.hpp>
+#include "../common/common.h"
 #include <opencv2/freetype.hpp>
 
 class Visualization {
@@ -10,9 +11,7 @@ public:
 
     explicit Visualization(cv::Mat& image);
 
-    void drawSign(cv::Point top_left, cv::Point bottom_right, const std::string& label, const cv::Scalar& color);
-
-    void drawSign(int x, int y, int width, int height, const std::string& label, const cv::Scalar& color);
+    void drawSign(TrafficSign sign);
 
 private:
     cv::Ptr<cv::freetype::FreeType2> ft2;

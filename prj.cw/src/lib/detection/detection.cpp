@@ -70,3 +70,37 @@ std::vector<Triangle> Detection::getTriangles(const std::vector<std::vector<cv::
     }
     return triangles;
 }
+
+std::vector<TrafficSign> Detection::proceed() const {
+    std::vector<TrafficSign> result;
+
+    auto red_mask = getMask(Detection::RED_RANGES);
+    filterMask(red_mask);
+    auto contours = getContours(red_mask);
+    auto circles = getCircles(red_mask);
+
+    for (auto &circle: circles) {
+        cv::Point top_left((int) (circle[0] - circle[2]), (int) (circle[1] - circle[2]));
+        cv::Point bottom_right((int) (circle[0] + circle[2]), (int) (circle[1] + circle[2]));
+        result.push_back({top_left, bottom_right, TrafficSign::PROHIBITING});
+    }
+
+    auto triangles = getTriangles(contours);
+    for (auto &triangle: triangles) {
+        cv::Point top_left(
+                std::min(triangle.p1.x, std::min(triangle.p2.x, triangle.p3.x)),
+                std::min(triangle.p1.y, std::min(triangle.p2.y, triangle.p3.y))
+        );
+        cv::Point bottom_right(
+                std::max(triangle.p1.x, std::max(triangle.p2.x, triangle.p3.x)),
+                std::max(triangle.p1.y, std::max(triangle.p2.y, triangle.p3.y))
+        );
+        if (triangle.orientation == Triangle::NORMAL) {
+            result.push_back({top_left, bottom_right, TrafficSign::WARNING});
+        } else {
+            result.push_back({top_left, bottom_right, TrafficSign::YELD});
+        }
+    }
+
+    return result;
+}
