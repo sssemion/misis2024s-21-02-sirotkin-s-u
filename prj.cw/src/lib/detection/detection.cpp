@@ -48,18 +48,25 @@ void Detection::filterMask(cv::Mat &mask) const {
 
 std::vector<cv::Vec3f> Detection::getCircles(const cv::Mat &mask) const {
     std::vector<cv::Vec3f> circles;
-    cv::HoughCircles(mask, circles, cv::HOUGH_GRADIENT, 1, mask.rows / 4.0, 200, 25, 0, 0);
+    cv::HoughCircles(mask, circles, cv::HOUGH_GRADIENT, 1, mask.rows / 4.0, 250, 27, 0, 0);
     return circles;
 }
 
-std::vector<std::vector<cv::Point>> Detection::getTriangles(const std::vector<std::vector<cv::Point>> &contours) const {
-    std::vector<std::vector<cv::Point>> triangles;
+std::vector<Triangle> Detection::getTriangles(const std::vector<std::vector<cv::Point>> &contours) const {
+    std::vector<Triangle> triangles;
     for (const auto& cnt : contours) {
         std::vector<cv::Point> approx;
         double epsilon = 0.05 * cv::arcLength(cnt, true);
         cv::approxPolyDP(cnt, approx, epsilon, true);
-        if (approx.size() == 3)
-            triangles.push_back(approx);
+        if (approx.size() == 3) {
+            std::sort(approx.begin(), approx.end(), [](const cv::Point& a, const cv::Point& b){return a.y < b.y;});
+            cv::Point p1 = approx[0], p2 = approx[1], p3 = approx[2];
+            if ( (p2.x < p1.x && p1.x < p3.x) || (p3.x < p1.x && p1.x < p2.x) ) {
+                triangles.push_back({p1, p2, p3, Triangle::NORMAL});
+            } else if ( (p1.x < p3.x && p3.x < p2.x) || (p2.x < p3.x && p3.x < p1.x) ) {
+                triangles.push_back({p1, p2, p3, Triangle::INVERTED});
+            }
+        }
     }
     return triangles;
 }

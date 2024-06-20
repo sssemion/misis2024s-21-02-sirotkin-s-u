@@ -7,4 +7,11 @@ struct ColorRange {
     cv::Scalar lower, upper;
 };
 
+struct Triangle {  // остроугольный треугольник
+    cv::Point p1, p2, p3;
+    enum {
+        NORMAL, INVERTED
+    } orientation;
+};
+
 #endif //COMMON_H

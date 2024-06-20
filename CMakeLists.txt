@@ -11,7 +11,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 find_package(OpenCV CONFIG REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_subdirectory(
-        prj.cw
-        prj.lab
-)
+add_subdirectory(prj.cw)
+add_subdirectory(prj.lab)

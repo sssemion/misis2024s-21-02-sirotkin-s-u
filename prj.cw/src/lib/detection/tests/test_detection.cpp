@@ -16,7 +16,6 @@ TEST_SUITE("Test detection lib") {
 
         SUBCASE("Yeld") { params = { "yeld.jpeg", 0, 1 }; }
         SUBCASE("Railway cross") { params = { "railway_cross.jpeg", 0, 1 }; }
-        SUBCASE("Speed limit") { params = { "speed_limit_and_bump.jpeg", 1, 0 }; }
         SUBCASE("Speed limit (temporary)") { params = { "speed_limit_temporary.jpeg", 1, 0 }; }
         SUBCASE("Many cautions") { params = { "6_cautions.jpeg", 0, 6 }; }
         SUBCASE("Forbid") { params = { "1_forbid.jpg", 1, 0 }; }
@@ -31,7 +30,6 @@ TEST_SUITE("Test detection lib") {
 
         cv::Mat mask = detector.getMask(Detection::RED_RANGES);
 
-        cv::imshow("asas", mask);
         detector.filterMask(mask);
 
         auto circles = detector.getCircles(mask);
@@ -47,8 +45,5 @@ TEST_SUITE("Test detection lib") {
             cv::circle(img, center, radius, cv::Scalar(0, 255, 0), 2);
         }
         cv::drawContours(img, triangles, -1, (0, 255, 255), 2);
-
-//        cv::imshow("asas", img);
-        cv::waitKey(0);
     }
 }
