@@ -10,20 +10,20 @@ struct ColorRange {
 struct TrafficSign {
     cv::Point top_left, bottom_right;
     enum {
-        PROHIBITING,
-        WARNING,
-        YELD,
+        PROHIBITING = 0,
+        WARNING = 1,
+        YIELD = 2,
     } type;
 
     static inline const cv::Scalar PROHIBITING_COLOR = {0, 0, 255},
             WARNING_COLOR = {0, 255, 255},
-            YELD_COLOR = {255, 127, 255};
+            YIELD_COLOR = {255, 127, 255};
 
     inline std::string repr() const {
         switch (type) {
             case PROHIBITING: return "Prohibiting";
             case WARNING: return "Warning";
-            case YELD: return "Yeld";
+            case YIELD: return "Yield";
         }
     };
 
@@ -31,7 +31,7 @@ struct TrafficSign {
         switch (type) {
             case PROHIBITING: return PROHIBITING_COLOR;
             case WARNING: return WARNING_COLOR;
-            case YELD: return YELD_COLOR;
+            case YIELD: return YIELD_COLOR;
         }
     }
 };

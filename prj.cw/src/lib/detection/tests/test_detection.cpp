@@ -14,7 +14,7 @@ TEST_SUITE("Test detection lib") {
 
         TestParams params;
 
-        SUBCASE("Yeld") { params = { "yeld.jpeg", 0, 1 }; }
+        SUBCASE("Yield") { params = { "yield.jpeg", 0, 1 }; }
         SUBCASE("Railway cross") { params = { "railway_cross.jpeg", 0, 1 }; }
         SUBCASE("Speed limit (temporary)") { params = { "speed_limit_temporary.jpeg", 1, 0 }; }
         SUBCASE("Many cautions") { params = { "6_cautions.jpeg", 0, 6 }; }

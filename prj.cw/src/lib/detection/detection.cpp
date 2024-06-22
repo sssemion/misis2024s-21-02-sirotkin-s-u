@@ -30,7 +30,7 @@ std::vector<std::vector<cv::Point>> Detection::getContours(const cv::Mat &mask) 
 
     // Фильтрация контуров по площади
     std::vector<std::vector<cv::Point>> filtered_contours;
-    double min_area = image.rows * image.cols * 0.004;  // 0.4% of overall area
+    double min_area = image.rows * image.cols * 0.001;  // 0.1% of overall area
     for (const auto& cnt : contours) {
         double area = cv::contourArea(cnt);
         if (area > min_area)
@@ -98,7 +98,7 @@ std::vector<TrafficSign> Detection::proceed() const {
         if (triangle.orientation == Triangle::NORMAL) {
             result.push_back({top_left, bottom_right, TrafficSign::WARNING});
         } else {
-            result.push_back({top_left, bottom_right, TrafficSign::YELD});
+            result.push_back({top_left, bottom_right, TrafficSign::YIELD});
         }
     }
 
