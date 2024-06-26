@@ -1,3 +1,5 @@
+#include <map>
+#include <vector>
 #include "CLI/CLI.hpp"
 #include "opencv2/opencv.hpp"
 #include "../../lib/detection/detection.h"
@@ -5,7 +7,8 @@
 class Args {
 
 public:
-    std::string data_dir;
+    std::string datasets_dir;
+    std::string dataset_name;
 
     Args(int argc, char **argv) : argc{argc}, argv{argv} {
         parseArgs();
@@ -17,10 +20,13 @@ private:
 
     void parseArgs() {
         CLI::App app;
-        app.add_option("--data-dir", data_dir, "Directory with test files")
+        app.add_option("--datasets-dir", datasets_dir, "Directory with test files")
                 ->required()->check(CLI::Validator(CLI::ExistingDirectory));
+        app.add_option("--dataset-name", dataset_name)
+                ->required()->check(CLI::IsMember({"day", "evening"}));
 
         app.parse(argc, argv);
+
     }
 };
 
@@ -33,24 +39,31 @@ struct Test {
     } expected_sign;
 };
 
-const std::vector<Test> files = {
-        {"autosave01_02_2012_09_18_38.jpg", Test::PROHIBITING},
-        {"autosave01_02_2012_09_19_16.jpg", Test::YIELD},
-        {"autosave01_02_2012_10_00_52.jpg", Test::YIELD},
-        {"autosave01_02_2012_10_13_37.jpg", Test::WARNING},
-        {"autosave01_02_2012_10_15_27.jpg", Test::WARNING},
-        {"autosave01_02_2012_10_23_50.jpg", Test::YIELD},
-        {"autosave01_02_2012_10_24_56.jpg", Test::WARNING},
-        {"autosave09_10_2012_09_42_23_0.jpg", Test::WARNING},
-        {"autosave10_10_2012_10_01_46_2.jpg", Test::PROHIBITING},
-        {"autosave16_04_2013_15_32_22_3.jpg", Test::WARNING},
-        {"autosave16_04_2013_15_36_52_2.jpg", Test::PROHIBITING},
-        {"autosave16_10_2012_11_48_48_1.jpg", Test::YIELD},
-        {"autosave21_01_2013_12_18_41_1.jpg", Test::WARNING},
-        {"yield.jpeg", Test::YIELD},
-        {"railway_cross.jpeg", Test::WARNING},
-        {"speed_limit_temporary.jpeg", Test::PROHIBITING},
-        {"1654711661_16-celes-club-p-dorozhnie-znaki-oboi-krasivie-31.jpg", Test::PROHIBITING},
+std::map<std::string, std::vector<Test>> datasets = {
+        {"day", {
+                {"autosave01_02_2012_10_00_52.jpg", Test::YIELD},
+                {"autosave01_02_2012_10_15_27.jpg", Test::WARNING},
+                {"autosave01_02_2012_10_23_50.jpg", Test::YIELD},
+                {"autosave01_02_2012_10_24_56.jpg", Test::WARNING},
+                {"autosave09_10_2012_09_42_23_0.jpg", Test::WARNING},
+                {"autosave16_04_2013_15_36_52_2.jpg", Test::PROHIBITING},
+                {"autosave16_10_2012_11_48_48_1.jpg", Test::YIELD},
+                {"autosave21_01_2013_12_18_41_1.jpg", Test::WARNING},
+                {"yield.jpeg", Test::YIELD},
+                {"railway_cross.jpeg", Test::WARNING},
+                {"speed_limit_temporary.jpeg", Test::PROHIBITING},
+                {"1654711661_16-celes-club-p-dorozhnie-znaki-oboi-krasivie-31.jpg", Test::PROHIBITING},
+            },
+        },
+        {"evening", {
+                {"autosave01_02_2012_09_18_38.jpg", Test::PROHIBITING},
+                {"autosave01_02_2012_09_19_16.jpg", Test::YIELD},
+                {"autosave10_10_2012_07_43_23_0.jpg", Test::YIELD},
+                {"autosave16_10_2012_07_13_13_1.jpg", Test::YIELD},
+                {"autosave16_10_2012_07_19_00_2.jpg", Test::PROHIBITING},
+                {"autosave16_10_2012_07_19_23_0.jpg", Test::PROHIBITING},
+            },
+        },
 };
 
 int main(int argc, char **argv) {
@@ -60,8 +73,9 @@ int main(int argc, char **argv) {
     int correct_detected = 0;
     int correct_classified = 0;
 
-    for (auto test: files) {
-        cv::Mat img = cv::imread(args.data_dir + "/" + test.filename);
+    std::vector<Test> files = datasets[args.dataset_name];
+    for (Test& test : files) {
+        cv::Mat img = cv::imread(args.datasets_dir + "/" + args.dataset_name + "/" + test.filename);
         Detection detector(img);
         auto traffic_signs = detector.proceed();
         if (traffic_signs.size() == 1) {

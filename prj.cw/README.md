@@ -11,7 +11,7 @@ mkdir build && cd build
 
 2. Собрать проект
 ```bash
-cmake .. && cmake --build 
+cmake .. && cmake --build .
 ```
 
 3. Запустить бинарник
