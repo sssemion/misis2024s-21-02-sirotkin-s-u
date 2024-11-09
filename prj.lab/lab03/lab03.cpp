@@ -76,7 +76,7 @@ cv::Mat draw_histogram(const std::vector<int>& histogram, const cv::Mat& img, co
 }
 
 
-cv::Mat autoContrastGrayscale(const cv::Mat& img, const std::vector<int>& histogram, double black_quantile, double white_quantile) {
+cv::Mat autoContrast(const cv::Mat& img, const std::vector<int>& histogram, double black_quantile, double white_quantile) {
     int cumm = 0;
     int total_pixels = img.rows * img.cols;
     int min_value = 0, max_value = 0;
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
 
     if (args.mode == GRAYSCALE) {
         cv::cvtColor(original_image, original_image, cv::COLOR_BGR2GRAY);
-        image = autoContrastGrayscale(original_image, original_histogram, args.black_q, args.white_q);
+        image = autoContrast(original_image, original_histogram, args.black_q, args.white_q);
         cv::vconcat(
             draw_histogram(original_histogram, original_image),
             draw_histogram(calc_histogram(image), image),
@@ -149,7 +149,7 @@ int main(int argc, char **argv) {
             std::vector<int> original_ch_histogram = calc_histogram(channels[i]);
             if (args.mode == PER_CHANNEL)
                 original_histogram = original_ch_histogram;
-            channels[i] = autoContrastGrayscale(channels[i], original_histogram, args.black_q, args.white_q);
+            channels[i] = autoContrast(channels[i], original_histogram, args.black_q, args.white_q);
             cv::Mat tmp;
             cv::vconcat(
                 draw_histogram(original_ch_histogram, channels[i], COLORS[i], false),
