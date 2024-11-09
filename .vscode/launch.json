@@ -29,12 +29,21 @@
             "MIMode": "lldb"
         },
         {
+            "preLaunchTask": "CMake: build",
             "name": "lab03",
             "type": "cppdbg",
             "request": "launch",
             "program": "${command:cmake.getLaunchTargetDirectory}/lab03",
             "args": [
-                "prj.lab/lab03/images/dog.jpg",
+                // "prj.lab/lab03/images/floppa.jpg",
+                "prj.lab/lab03/images/cheems.jpeg",
+                // "prj.lab/lab03/images/capy.png",
+                "--mode",
+                // "grayscale",
+                // "per-channel",
+                "joint",
+                "-b", "0.1",
+                "-w", "0.9",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
