@@ -2,8 +2,8 @@
 #include <vector>
 #include <random>
 
-double iouThreshold = 0.5; // Intersection over Union Threshold - коэффициент перекрытия областей
-int gaussian_ksize = 10, sigma = 25, threshold_value = 128, adaptive_block_size = 11, adaptive_C = 2;
+double iouThreshold = 0.2; // Intersection over Union Threshold - коэффициент перекрытия областей
+int gaussian_ksize = 10, sigma = 25, threshold_value = 128, adaptive_block_size = 11, adaptive_C = 22;
 
 namespace Windows {
     std::string NOISE_AND_BLUR = "Original image with noise and blur";
@@ -88,7 +88,7 @@ void applyAdaptiveBinarization(int, void*) {
     adaptive_block_size += (1 - adaptive_block_size % 2);
     adaptive_block_size = std::max(3, adaptive_block_size);
 
-    cv::adaptiveThreshold(noised_image, adaptive_img, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, adaptive_block_size, adaptive_C);
+    cv::adaptiveThreshold(noised_image, adaptive_img, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, adaptive_block_size, adaptive_C - 20);
     detectAndEvaluateCircles(adaptive_img);
     cv::imshow(Windows::ADAPTIVE_THRESHOLD, adaptive_img);
 }
@@ -96,7 +96,7 @@ void applyAdaptiveBinarization(int, void*) {
 void applyOtsuBinarization(int, void*) {
     cv::threshold(noised_image, otsu_img, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
     detectAndEvaluateCircles(otsu_img);
-    cv::imshow("Binarization - Otsu's Threshold", otsu_img);
+    cv::imshow(Windows::OTSU_THRESHOLD, otsu_img);
 }
 
 void addNoise(cv::Mat& img, double sigma) {
@@ -133,7 +133,7 @@ int main() {
 
     cv::namedWindow(Windows::ADAPTIVE_THRESHOLD, cv::WINDOW_AUTOSIZE);
     cv::createTrackbar("Block Size", Windows::ADAPTIVE_THRESHOLD, &adaptive_block_size, 50, applyAdaptiveBinarization);
-    cv::createTrackbar("C", Windows::ADAPTIVE_THRESHOLD, &adaptive_C, 20, applyAdaptiveBinarization);
+    cv::createTrackbar("C (x-20), x = ", Windows::ADAPTIVE_THRESHOLD, &adaptive_C, 40, applyAdaptiveBinarization);
 
     cv::namedWindow("Binarization - Otsu's Threshold", cv::WINDOW_AUTOSIZE);
 
