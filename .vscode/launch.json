@@ -51,5 +51,18 @@
             "externalConsole": false,
             "MIMode": "lldb",
         },
+        {
+            "preLaunchTask": "CMake: build",
+            "name": "lab04",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${command:cmake.getLaunchTargetDirectory}/lab04",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+        },
     ]
 }
